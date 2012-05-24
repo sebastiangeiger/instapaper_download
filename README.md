@@ -1,24 +1,22 @@
-# InstapaperDownload
+# instapaper_download
 
-TODO: Write a gem description
+This gem provides a binary that lets you download an epub from instapaper and put it on an ebook reader.
 
 ## Installation
-
-Add this line to your application's Gemfile:
-
-    gem 'instapaper_download'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
 
     $ gem install instapaper_download
 
 ## Usage
 
-TODO: Write usage instructions here
+If neccessary do 
+
+    $ rvm reload
+
+then
+
+    $ instapaper_download
+
+No parameters or anything!
 
 ## Contributing
 
