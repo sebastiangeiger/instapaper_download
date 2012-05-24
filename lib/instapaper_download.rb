@@ -108,6 +108,7 @@ class Instapaper
 end
 
 class EbookReader
+  attr_reader :mount_point
 
   def initialize(path)
     @mount_point = path
