@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+require 'instapaper_download.rb'
+require 'mechanize'
+
+config_file = Instapaper::ConfigFile.new
+
+account = Instapaper::Account.from_config_file(config_file)
+agent = Mechanize.new
+agent.user_agent_alias = 'Mac Safari'
+
+login_page = Instapaper::LoginPage.new(agent)
+agent = login_page.login(account)
+if login_page.logged_in?
+  download_page = Instapaper::EpubDownloadPage.new(agent)
+  file = download_page.download
+  if file.respond_to?(:save)
+    file.save(file.filename)
+    instapaper_file = file.filename
+    puts %Q{Saved your epub to "#{instapaper_file}"}
+  else
+    $stderr.puts "Something is broken, I logged in successfully but then I couldn't save the file. Weird, huh?!"
+    exit 1
+  end
+else
+  error_message = "Could not login, maybe something is wrong with your credentials."
+  error_message += %Q{ You probably want to check that configuration file thingy you have at "#{config_file.path}".} if config_file.exists?
+  $stderr.puts error_message
+  exit 1
+end
+
+reader = EbookReader.from_config_file(config_file)
+if reader.is_mounted?
+  reader.move_to_device(instapaper_file)
+else
+  error_message = %Q{No reader found at "#{reader.mount_point}".}
+  error_message += %Q{ If you are sure that it is mounted, you probably want to check that configuration file thingy you have at "#{config_file.path}".} if config_file.exists?
+  $stderr.puts error_message
+end
